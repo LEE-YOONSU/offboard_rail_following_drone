@@ -41,7 +41,7 @@ ros2_ws/
 
 - ROS 2 Humble
 - PX4 v1.15
-- Gazebo Harmoric
+- Gazebo Harmonic
 - MAVROS
 ---
 
