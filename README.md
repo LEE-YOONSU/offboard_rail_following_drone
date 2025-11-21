@@ -1,14 +1,14 @@
-# 🛤️ Offboard Rail-Following Drone with Depth Obstacle Avoidance
+# Offboard Rail-Following Drone with Depth Obstacle Avoidance
 
 This project implements a **PX4 + MAVROS-based autonomous drone** that performs:
 
-- 🎯 **Rail tracking using a YOLOv8 vision model**
-- 🛑 **Obstacle avoidance using a depth camera**
-- 🛠️ Built with **ROS2 Humble**, **Gazebo**, and **PX4 SITL**
+- **Rail tracking using a YOLOv8 vision model**
+- **Obstacle avoidance using a depth camera**
+- Built with **ROS2 Humble**, **Gazebo**, and **PX4 SITL**
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 | Feature                | Description                                                                 |
 |------------------------|-----------------------------------------------------------------------------|
@@ -19,7 +19,7 @@ This project implements a **PX4 + MAVROS-based autonomous drone** that performs:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```bash
 ros2_ws/
@@ -37,7 +37,7 @@ ros2_ws/
     └── setup.py
 ```
 ---
-## 🛠️ Requirements
+## Requirements
 
 - ROS 2 Humble
 - PX4 v1.15
@@ -45,7 +45,7 @@ ros2_ws/
 - MAVROS
 ---
 
-## ▶️ Run Instructions
+## Run Instructions
 **1. Build Workspace**
 ```bash
 cd ~/ros2_ws
@@ -71,7 +71,7 @@ ros2 run rail_following_package yolo_detected_node.py
 ros2 run rail_following_package mission_node.py
 ```
 ---
-## 🛸 Flight Logic Summary
+## Flight Logic Summary
 
 - Drone takes off to TARGET_ALT = 10.0m in OFFBOARD mode.
 - Uses YOLO to detect the red rail line, computes center offset + angle.
@@ -85,3 +85,8 @@ ros2 run rail_following_package mission_node.py
 - Name: LEE YOONSU
 - Contact: [GitHub](https://github.com/LEE-YOONSU)
 - Project: offboard_rail_following_drone
+---
+## Demo Video
+[![Demo Video](https://img.youtube.com/vi/cKUUSqFoUNA/0.jpg)](https://youtu.be/cKUUSqFoUNA)
+
+> 🔗 [Watch on YouTube](https://youtu.be/cKUUSqFoUNA)
