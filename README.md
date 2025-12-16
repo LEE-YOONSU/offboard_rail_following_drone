@@ -87,6 +87,6 @@ ros2 run rail_following_package mission_node.py
 - Project: offboard_rail_following_drone
 ---
 ## Demo Video
-[![Demo Video](https://img.youtube.com/vi/cKUUSqFoUNA/0.jpg)](https://youtu.be/cKUUSqFoUNA)
+[![Demo Video](https://img.youtube.com/vi/cKUUSqFoUNA/0.jpg)](https://youtu.be/-H0OrVRx1Ls)
 
-> 🔗 [Watch on YouTube](https://youtu.be/cKUUSqFoUNA)
+> 🔗 [Watch on YouTube](https://youtu.be/-H0OrVRx1Ls)
