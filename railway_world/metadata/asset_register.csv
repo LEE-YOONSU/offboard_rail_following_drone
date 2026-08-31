@@ -1,0 +1,54 @@
+asset_id,asset_class,start_chainage_m,end_chainage_m,quantity,status,source_basis
+TRACK-SEG-000,track_segment,0,12,1,synthetic_reference,KR C-14060
+TRACK-SEG-001,track_segment,12,24,1,synthetic_reference,KR C-14060
+TRACK-SEG-002,track_segment,24,36,1,synthetic_reference,KR C-14060
+TRACK-SEG-003,track_segment,36,48,1,synthetic_reference,KR C-14060
+TRACK-SEG-004,track_segment,48,60,1,synthetic_reference,KR C-14060
+TRACK-SEG-005,track_segment,60,72,1,synthetic_reference,KR C-14060
+TRACK-SEG-006,track_segment,72,84,1,synthetic_reference,KR C-14060
+TRACK-SEG-007,track_segment,84,96,1,synthetic_reference,KR C-14060
+TRACK-SEG-008,track_segment,96,108,1,synthetic_reference,KR C-14060
+TRACK-SEG-009,track_segment,108,120,1,synthetic_reference,KR C-14060
+TRACK-SEG-010,track_segment,120,132,1,synthetic_reference,KR C-14060
+TRACK-SEG-011,track_segment,132,144,1,synthetic_reference,KR C-14060
+TRACK-SEG-012,track_segment,144,156,1,synthetic_reference,KR C-14060
+TRACK-SEG-013,track_segment,156,168,1,synthetic_reference,KR C-14060
+TRACK-SEG-014,track_segment,168,180,1,synthetic_reference,KR C-14060
+TRACK-SEG-015,track_segment,180,192,1,synthetic_reference,KR C-14060
+TRACK-SEG-016,track_segment,192,204,1,synthetic_reference,KR C-14060
+TRACK-SEG-017,track_segment,204,216,1,synthetic_reference,KR C-14060
+TRACK-SEG-018,track_segment,216,228,1,synthetic_reference,KR C-14060
+TRACK-SEG-019,track_segment,228,240,1,synthetic_reference,KR C-14060
+TRACK-SEG-020,track_segment,240,252,1,synthetic_reference,KR C-14060
+TRACK-SEG-021,track_segment,252,264,1,synthetic_reference,KR C-14060
+TRACK-SEG-022,track_segment,264,276,1,synthetic_reference,KR C-14060
+TRACK-SEG-023,track_segment,276,288,1,synthetic_reference,KR C-14060
+TRACK-SEG-024,track_segment,288,300,1,synthetic_reference,KR C-14060
+TRACK-SEG-025,track_segment,300,312,1,synthetic_reference,KR C-14060
+TRACK-SEG-026,track_segment,312,324,1,synthetic_reference,KR C-14060
+TRACK-SEG-027,track_segment,324,336,1,synthetic_reference,KR C-14060
+TRACK-SEG-028,track_segment,336,348,1,synthetic_reference,KR C-14060
+TRACK-SEG-029,track_segment,348,360,1,synthetic_reference,KR C-14060
+TRACK-SEG-030,track_segment,360,372,1,synthetic_reference,KR C-14060
+TRACK-SEG-031,track_segment,372,384,1,synthetic_reference,KR C-14060
+TRACK-SEG-032,track_segment,384,396,1,synthetic_reference,KR C-14060
+TRACK-SEG-033,track_segment,396,408,1,synthetic_reference,KR C-14060
+TRACK-SEG-034,track_segment,408,420,1,synthetic_reference,KR C-14060
+TRACK-SEG-035,track_segment,420,432,1,synthetic_reference,KR C-14060
+TRACK-SEG-036,track_segment,432,444,1,synthetic_reference,KR C-14060
+TRACK-SEG-037,track_segment,444,456,1,synthetic_reference,KR C-14060
+TRACK-SEG-038,track_segment,456,468,1,synthetic_reference,KR C-14060
+TRACK-SEG-039,track_segment,468,480,1,synthetic_reference,KR C-14060
+TRACK-SEG-040,track_segment,480,492,1,synthetic_reference,KR C-14060
+TRACK-SEG-041,track_segment,492,500,1,synthetic_reference,KR C-14060
+OCS-WIRE-000,contact_and_messenger,10,490,1,synthetic_reference,KR E-03130 / KR E-03160
+PLATFORM-001,side_platform,130,250,1,photo_referenced,provided_station_reference
+PLATFORM-CANOPY-001,platform_canopy,130,250,1,photo_referenced,provided_station_reference
+PLATFORM-FURN-001,platform_furniture,184,196,1,photo_referenced,provided_station_reference
+XING-001,level_crossing,428,436,1,synthetic_reference,Korean_level_crossing_visual_reference
+TURNOUT-001,right_hand_turnout,320,342,1,synthetic_reference,visual_turnout_reference
+SIDING-001,curved_siding,330,398,1,synthetic_reference,turnout_generated_alignment
+SWITCH-MACHINE-001,switch_machine,325,325,1,synthetic_reference,visual_turnout_reference
+BUFFER-STOP-001,buffer_stop,398,398,1,synthetic_reference,visual_turnout_reference
+SIG-CAB-001,signal_equipment_cabinet,286,286,1,conceptual,visual_reference
+BLDG-MNT-001,maintenance_hut,308,308,1,conceptual,visual_reference

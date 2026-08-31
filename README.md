@@ -1,92 +1,29 @@
-# Offboard Rail-Following Drone with Depth Obstacle Avoidance
+# Offboard Rail-Following Drone Experiments
 
-This project implements a **PX4 + MAVROS-based autonomous drone** that performs:
+PX4 기반 철도 추종 드론을 서로 다른 시험 환경에서 검증하기 위한 저장소입니다. 기존 비정형 도로 시험과 새 Gazebo 철도 합성 환경을 독립된 폴더로 관리합니다.
 
-- **Rail tracking using a YOLOv8 vision model**
-- **Obstacle avoidance using a depth camera**
-- Built with **ROS2 Humble**, **Gazebo**, and **PX4 SITL**
+## 폴더 구성
 
----
+| 폴더 | 내용 |
+|---|---|
+| [`unstructured_road_test/`](./unstructured_road_test/) | ROS 2 Humble, MAVROS, YOLO 및 depth obstacle avoidance를 이용한 기존 비정형 도로 시험 코드 |
+| [`railway_world/`](./railway_world/) | Gazebo Harmonic용 500 m 한국형 철도 월드, X500 하방 카메라 모델, 합성 데이터 캡처 도구 |
 
-## Key Features
+각 환경의 설치 조건과 실행 명령은 해당 폴더의 README를 참고하세요.
 
-| Feature                | Description                                                                 |
-|------------------------|-----------------------------------------------------------------------------|
-| YOLOv5 Detection       | Custom-trained YOLO model detects and segments rail tracks in real-time     |
-| Depth Camera Avoidance | Gazebo-based simulated depth camera detects obstacles and avoids them       |
-| MAVROS Integration     | Sends velocity and position setpoints for PX4 OFFBOARD control              |
-| ROS2 Bridge            | Uses `ros_gz_bridge` to connect Gazebo sensor data with ROS2 topics         |
-
----
-
-## Project Structure
+## 내려받기
 
 ```bash
-ros2_ws/
-└── src/
-    └── rail_following_package
-    ├── package.xml
-    ├── rail_following_package
-    │   ├── Models
-    │   │   └── best.pt
-    │   ├── __init__.py
-    │   ├── mission_node.py
-    │   └── yolo_detected_node.py
-    ├── README.md
-    ├── setup.cfg
-    └── setup.py
+git clone https://github.com/LEE-YOONSU/offboard_rail_following_drone.git
+cd offboard_rail_following_drone
 ```
----
-## Requirements
 
-- ROS 2 Humble
-- PX4 v1.15
-- Gazebo Harmonic
-- MAVROS
----
+철도 환경만 실행하려면:
 
-## Run Instructions
-**1. Build Workspace**
 ```bash
-cd ~/ros2_ws
-colcon build --symlink-install
-source install/setup.bash
+cd railway_world
+./check_environment.sh
+./run.sh
 ```
-**2. Start Gazebo PX4 Simulation**
-```bash
-make px4_sitl gz_x500_mono_cam
-```
-**3. Run ROS_GZ bridge**
-```bash
-source ~/ros2_gz_ws/install/setup.bash
-ros2 run ros_gz_bridge parameter_bridge ...
-```
-**4. Run MAVROS**
-```bash
-ros2 launch mavros px4.launch.py fcu_url:=udp://:14540@127.0.0.1:14557
-```
-**5. Launch the mission node**
-```bash
-ros2 run rail_following_package yolo_detected_node.py
-ros2 run rail_following_package mission_node.py
-```
----
-## Flight Logic Summary
 
-- Drone takes off to TARGET_ALT = 10.0m in OFFBOARD mode.
-- Uses YOLO to detect the red rail line, computes center offset + angle.
-- If no obstacle detected ahead, cruise forward at constant speed.
-- If depth image detects obstacle within OBS_THRESH = 7.0m, the drone:
-  - Stops forward motion
-  - Strafes left/right based on obstacle density
-  - Resumes tracking once clear
----
-👨‍💻 Developer
-- Name: LEE YOONSU
-- Contact: [GitHub](https://github.com/LEE-YOONSU)
-- Project: offboard_rail_following_drone
----
-## Demo Video
-[![Demo Video](https://img.youtube.com/vi/cKUUSqFoUNA/0.jpg)](https://youtu.be/-H0OrVRx1Ls)
-
-> 🔗 [Watch on YouTube](https://youtu.be/-H0OrVRx1Ls)
+철도 환경의 생성 데이터셋과 렌더 출력은 저장소 용량을 줄이기 위해 Git에서 제외되어 있습니다.

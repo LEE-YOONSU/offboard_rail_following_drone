@@ -1,0 +1,23 @@
+# Generated captures and datasets are intentionally kept outside Git.
+/datasets/
+/output/
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Editor, OS, and runtime files
+.DS_Store
+.idea/
+.vscode/
+*.log
+*.tmp
+*.swp
+

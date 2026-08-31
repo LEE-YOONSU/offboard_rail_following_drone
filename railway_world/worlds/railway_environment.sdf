@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="railway_environment">
+    <physics name="default_physics" type="ignored"><max_step_size>0.002</max_step_size><real_time_factor>1.0</real_time_factor></physics>
+    <!-- Synthetic Korean GNSS origin for PX4 NavSat. Replace with surveyed
+         coordinates when converting this reference world to a site twin. -->
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <world_frame_orientation>ENU</world_frame_orientation>
+      <latitude_deg>37.5665</latitude_deg>
+      <longitude_deg>126.9780</longitude_deg>
+      <elevation>38.0</elevation>
+    </spherical_coordinates>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <!-- Required by PX4 SITL vehicles spawned into this custom world. -->
+    <plugin filename="gz-sim-contact-system" name="gz::sim::systems::Contact"/>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+    <plugin filename="gz-sim-air-pressure-system" name="gz::sim::systems::AirPressure"/>
+    <plugin filename="gz-sim-navsat-system" name="gz::sim::systems::NavSat"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"><render_engine>ogre2</render_engine></plugin>
+    <scene><ambient>0.55 0.58 0.62 1</ambient><background>0.68 0.80 0.92 1</background><shadows>true</shadows><grid>false</grid></scene>
+    <gui fullscreen="0">
+      <plugin filename="MinimalScene" name="3D View">
+        <gz-gui>
+          <title>Railway World</title>
+          <property type="bool" key="showTitleBar">false</property>
+          <property type="string" key="state">docked</property>
+        </gz-gui>
+        <engine>ogre2</engine><scene>scene</scene>
+        <ambient_light>0.55 0.58 0.62</ambient_light><background_color>0.68 0.80 0.92</background_color>
+        <!-- Opens looking at the X500 default spawn on the station track. -->
+        <camera_pose>-125 -10 6 0 0.28 0.96</camera_pose>
+        <camera_clip><near>0.10</near><far>2000</far></camera_clip>
+      </plugin>
+      <plugin filename="GzSceneManager" name="Scene Manager"/>
+      <plugin filename="InteractiveViewControl" name="Interactive view control"/>
+      <plugin filename="CameraTracking" name="Camera Tracking"/>
+      <plugin filename="WorldControl" name="World control"/>
+      <plugin filename="WorldStats" name="World stats"/>
+    </gui>
+    <light name="sun" type="directional"><pose>0 0 80 0 0 0</pose><cast_shadows>true</cast_shadows><intensity>1.1</intensity><direction>-0.45 0.25 -0.86</direction><diffuse>0.96 0.94 0.88 1</diffuse><specular>0.25 0.25 0.25 1</specular></light>
+
+    <model name="landscape">
+      <static>true</static>
+      <link name="ground">
+        <collision name="ground_collision"><pose>0 25 -0.12 0 0 0</pose><geometry><box><size>600 200 0.20</size></box></geometry></collision>
+        <visual name="ground_visual"><pose>0 25 -0.12 0 0 0</pose><geometry><box><size>600 200 0.20</size></box></geometry><material><ambient>0.20 0.31 0.14 1</ambient><diffuse>0.31 0.47 0.22 1</diffuse></material></visual>
+        <visual name="service_road_tangent"><pose>-124 9 0.015 0 0 0</pose><geometry><box><size>252 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_tangent"><pose>-124 3.25 0.03 0 0 0</pose><geometry><box><size>252 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_00"><pose>7.8648 9.0440 0.015 0 0 0.015000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_00"><pose>7.9510 3.2946 0.03 0 0 0.015000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_01"><pose>19.5891 9.3958 0.015 0 0 0.045000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_01"><pose>19.8477 3.6516 0.03 0 0 0.045000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_02"><pose>31.2975 10.0992 0.015 0 0 0.075000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_02"><pose>31.7284 4.3653 0.03 0 0 0.075000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_03"><pose>42.9796 11.1534 0.015 0 0 0.105000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_03"><pose>43.5822 5.4351 0.03 0 0 0.105000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_04"><pose>54.6248 12.5576 0.015 0 0 0.135000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_04"><pose>55.3987 6.8599 0.03 0 0 0.135000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_05"><pose>66.2227 14.3104 0.015 0 0 0.165000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_05"><pose>67.1671 8.6385 0.03 0 0 0.165000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_06"><pose>77.7627 16.4104 0.015 0 0 0.195000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_06"><pose>78.8769 10.7693 0.03 0 0 0.195000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_07"><pose>89.2346 18.8555 0.015 0 0 0.225000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_07"><pose>90.5174 13.2504 0.03 0 0 0.225000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_08"><pose>100.6280 21.6437 0.015 0 0 0.255000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_08"><pose>102.0784 16.0796 0.03 0 0 0.255000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_09"><pose>111.9326 24.7723 0.015 0 0 0.285000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_09"><pose>113.5492 19.2542 0.03 0 0 0.285000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_10"><pose>123.1382 28.2386 0.015 0 0 0.315000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_10"><pose>124.9197 22.7715 0.03 0 0 0.315000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_11"><pose>134.2349 32.0395 0.015 0 0 0.345000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_11"><pose>136.1795 26.6283 0.03 0 0 0.345000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_12"><pose>145.2126 36.1715 0.015 0 0 0.375000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_12"><pose>147.3186 30.8211 0.03 0 0 0.375000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_13"><pose>156.0613 40.6310 0.015 0 0 0.405000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_13"><pose>158.3269 35.3461 0.03 0 0 0.405000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_14"><pose>166.7715 45.4138 0.015 0 0 0.435000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_14"><pose>169.1946 40.1993 0.03 0 0 0.435000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_15"><pose>177.3333 50.5158 0.015 0 0 0.465000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_15"><pose>179.9117 45.3763 0.03 0 0 0.465000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_16"><pose>187.7374 55.9322 0.015 0 0 0.495000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_16"><pose>190.4688 50.8724 0.03 0 0 0.495000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_17"><pose>197.9743 61.6583 0.015 0 0 0.525000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_17"><pose>200.8563 56.6827 0.03 0 0 0.525000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_18"><pose>208.0348 67.6889 0.015 0 0 0.555000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_18"><pose>211.0648 62.8020 0.03 0 0 0.555000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+        <visual name="service_road_curve_19"><pose>217.9100 74.0186 0.015 0 0 0.585000</pose><geometry><box><size>12.15 4.5 0.03</size></box></geometry><material><diffuse>0.38 0.36 0.32 1</diffuse></material></visual>
+        <visual name="drainage_curve_19"><pose>221.0851 69.2247 0.03 0 0 0.585000</pose><geometry><box><size>12.15 0.60 0.08</size></box></geometry><material><diffuse>0.24 0.28 0.28 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <!-- Exactly 500 m: 41 x 12 m modules plus one 8 m terminal module. -->
+    <include><uri>model://track_12m</uri><name>track_00</name><pose>-244 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_01</name><pose>-232 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_02</name><pose>-220 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_03</name><pose>-208 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_04</name><pose>-196 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_05</name><pose>-184 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_06</name><pose>-172 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_07</name><pose>-160 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_08</name><pose>-148 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_09</name><pose>-136 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_10</name><pose>-124 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_11</name><pose>-112 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_12</name><pose>-100 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_13</name><pose>-88 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_14</name><pose>-76 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_15</name><pose>-64 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_16</name><pose>-52 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_17</name><pose>-40 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_18</name><pose>-28 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_19</name><pose>-16 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_20</name><pose>-4 0 0 0 0 0</pose></include>
+    <include><uri>model://track_12m</uri><name>track_21</name><pose>7.9998 0.0450 0 0 0 0.015000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_22</name><pose>19.9939 0.4049 0 0 0 0.045000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_23</name><pose>31.9719 1.1245 0 0 0 0.075000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_24</name><pose>43.9229 2.2030 0 0 0 0.105000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_25</name><pose>55.8361 3.6395 0 0 0 0.135000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_26</name><pose>67.7009 5.4327 0 0 0 0.165000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_27</name><pose>79.5066 7.5809 0 0 0 0.195000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_28</name><pose>91.2425 10.0824 0 0 0 0.225000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_29</name><pose>102.8982 12.9347 0 0 0 0.255000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_30</name><pose>114.4630 16.1353 0 0 0 0.285000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_31</name><pose>125.9266 19.6814 0 0 0 0.315000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_32</name><pose>137.2787 23.5698 0 0 0 0.345000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_33</name><pose>148.5090 27.7970 0 0 0 0.375000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_34</name><pose>159.6075 32.3590 0 0 0 0.405000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_35</name><pose>170.5642 37.2520 0 0 0 0.435000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_36</name><pose>181.3691 42.4714 0 0 0 0.465000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_37</name><pose>192.0127 48.0125 0 0 0 0.495000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_38</name><pose>202.4852 53.8704 0 0 0 0.525000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_39</name><pose>212.7773 60.0398 0 0 0 0.555000</pose></include>
+    <include><uri>model://track_12m</uri><name>track_40</name><pose>222.8798 66.5152 0 0 0 0.585000</pose></include>
+    <include><uri>model://track_8m</uri><name>track_41_terminal</name><pose>231.1470 72.1408 0 0 0 0.610000</pose></include>
+
+    <!-- Long spans on tangent track; 24 m chords follow the 400 m radius curve. -->
+    <include><uri>model://catenary_span_96m</uri><name>ocs_tangent_00</name><pose>-192 0 0 0 0 0</pose></include>
+    <include><uri>model://catenary_span_96m</uri><name>ocs_tangent_01</name><pose>-96 0 0 0 0 0</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_tangent_02</name><pose>-36 0 0 0 0 0</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_tangent_03</name><pose>-12 0 0 0 0 0</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_00</name><pose>13.9982 0.1800 0 0 0 0.030000</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_01</name><pose>37.9514 1.6189 0 0 0 0.090000</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_02</name><pose>61.7753 4.4916 0 0 0 0.150000</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_03</name><pose>85.3840 8.7876 0 0 0 0.210000</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_04</name><pose>108.6926 14.4916 0 0 0 0.270000</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_05</name><pose>131.6172 21.5831 0 0 0 0.330000</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_06</name><pose>154.0754 30.0364 0 0 0 0.390000</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_07</name><pose>175.9862 39.8212 0 0 0 0.450000</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_08</name><pose>197.2709 50.9022 0 0 0 0.510000</pose></include>
+    <include><uri>model://catenary_span_24m</uri><name>ocs_curve_09</name><pose>217.8528 63.2396 0 0 0 0.570000</pose></include>
+    <include><uri>model://catenary_mast</uri><name>ocs_curve_terminal</name><pose>227.8570 69.8658 0 0 0 0.600000</pose></include>
+
+    <!-- Rail-side modules are omitted through station and crossing openings. -->
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_00</name><pose>-244 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_01</name><pose>-232 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_02</name><pose>-220 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_03</name><pose>-208 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_04</name><pose>-196 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_05</name><pose>-184 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_06</name><pose>-172 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_07</name><pose>-160 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_08</name><pose>-148 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_09</name><pose>-136 0 0 0 0 0</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_22</name><pose>19.9939 0.4049 0 0 0 0.045000</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_23</name><pose>31.9719 1.1245 0 0 0 0.075000</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_24</name><pose>43.9229 2.2030 0 0 0 0.105000</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_25</name><pose>55.8361 3.6395 0 0 0 0.135000</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_33</name><pose>148.5090 27.7970 0 0 0 0.375000</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_34</name><pose>159.6075 32.3590 0 0 0 0.405000</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_37</name><pose>192.0127 48.0125 0 0 0 0.495000</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_38</name><pose>202.4852 53.8704 0 0 0 0.525000</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_39</name><pose>212.7773 60.0398 0 0 0 0.555000</pose></include>
+    <include><uri>model://railside_infrastructure_12m</uri><name>infra_40</name><pose>222.8798 66.5152 0 0 0 0.585000</pose></include>
+
+    <!-- Photo-referenced 120 m Korean side platform. -->
+    <include><uri>model://station_platform_12m</uri><name>platform_00</name><pose>-114 0 0 0 0 0</pose></include>
+    <include><uri>model://station_platform_12m</uri><name>platform_01</name><pose>-102 0 0 0 0 0</pose></include>
+    <include><uri>model://station_platform_12m</uri><name>platform_02</name><pose>-90 0 0 0 0 0</pose></include>
+    <include><uri>model://station_platform_12m</uri><name>platform_03</name><pose>-78 0 0 0 0 0</pose></include>
+    <include><uri>model://station_platform_12m</uri><name>platform_04</name><pose>-66 0 0 0 0 0</pose></include>
+    <include><uri>model://station_platform_12m</uri><name>platform_05</name><pose>-54 0 0 0 0 0</pose></include>
+    <include><uri>model://station_platform_12m</uri><name>platform_06</name><pose>-42 0 0 0 0 0</pose></include>
+    <include><uri>model://station_platform_12m</uri><name>platform_07</name><pose>-30 0 0 0 0 0</pose></include>
+    <include><uri>model://station_platform_12m</uri><name>platform_08</name><pose>-18 0 0 0 0 0</pose></include>
+    <include><uri>model://station_platform_12m</uri><name>platform_09</name><pose>-6 0 0 0 0 0</pose></include>
+
+    <include><uri>model://station_furniture</uri><name>platform_furniture</name><pose>-66 0 0 0 0 0</pose></include>
+    <include><uri>model://railway_turnout</uri><name>turnout_and_siding</name><pose>79.5066 7.5809 0 0 0 0.195000</pose></include>
+    <include><uri>model://level_crossing</uri><name>level_crossing_east</name><pose>175.9862 39.8212 0 0 0 0.450000</pose></include>
+
+    <!-- Persistent Entity Tree entry. PX4 SITL attaches to this model by name. -->
+    <include>
+      <uri>model://x500_rail_down_cam</uri>
+      <name>x500</name>
+      <pose>-118 0 0.60 0 0 0</pose>
+    </include>
+
+    <model name="signal_equipment">
+      <static>true</static><pose>36 3.1 0 0 0 0</pose>
+      <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>40</label></plugin>
+      <link name="cabinet">
+        <collision name="collision"><pose>0 0 0.75 0 0 0</pose><geometry><box><size>1.4 0.8 1.5</size></box></geometry></collision>
+        <visual name="body"><pose>0 0 0.75 0 0 0</pose><geometry><box><size>1.4 0.8 1.5</size></box></geometry><material><diffuse>0.67 0.70 0.66 1</diffuse></material></visual>
+        <visual name="door"><pose>-0.705 0 0.75 0 1.570796 0</pose><geometry><box><size>0.70 0.02 1.30</size></box></geometry><material><diffuse>0.40 0.44 0.40 1</diffuse></material></visual>
+      </link>
+    </model>
+    <model name="maintenance_hut">
+      <static>true</static><pose>58 13 0 0 0 0</pose>
+      <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>50</label></plugin>
+      <link name="hut">
+        <collision name="body_collision"><pose>0 0 1.5 0 0 0</pose><geometry><box><size>5 4 3</size></box></geometry></collision>
+        <visual name="body"><pose>0 0 1.5 0 0 0</pose><geometry><box><size>5 4 3</size></box></geometry><material><diffuse>0.72 0.69 0.58 1</diffuse></material></visual>
+        <visual name="roof"><pose>0 0 3.2 0 0 0</pose><geometry><box><size>5.6 4.6 0.25</size></box></geometry><material><diffuse>0.22 0.25 0.26 1</diffuse></material></visual>
+        <visual name="door"><pose>2.51 0 1.15 0 1.570796 0</pose><geometry><box><size>1.9 0.08 2.3</size></box></geometry><material><diffuse>0.20 0.32 0.38 1</diffuse></material></visual>
+      </link>
+    </model>
+
+    <include><uri>model://vegetation_cluster</uri><name>trees_00</name><pose>-230 17 0 0 0 0</pose></include>
+    <include><uri>model://vegetation_cluster</uri><name>trees_01</name><pose>-188 -16 0 0 0 2.4</pose></include>
+    <include><uri>model://vegetation_cluster</uri><name>trees_02</name><pose>-145 20 0 0 0 0.7</pose></include>
+    <include><uri>model://vegetation_cluster</uri><name>trees_03</name><pose>20 -18 0 0 0 1.3</pose></include>
+    <include><uri>model://vegetation_cluster</uri><name>trees_04</name><pose>88 19 0 0 0 2.0</pose></include>
+    <include><uri>model://vegetation_cluster</uri><name>trees_05</name><pose>145 -17 0 0 0 0.4</pose></include>
+    <include><uri>model://vegetation_cluster</uri><name>trees_06</name><pose>218 15 0 0 0 2.8</pose></include>
+  </world>
+</sdf>

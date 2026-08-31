@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="synthetic_sensor_rig">
+    <static>true</static>
+    <link name="optical_head">
+      <sensor name="rgb" type="camera">
+        <always_on>true</always_on><update_rate>10</update_rate><topic>synthetic/rgb</topic>
+        <camera><horizontal_fov>1.0472</horizontal_fov><image><width>1280</width><height>720</height><format>R8G8B8</format></image><clip><near>0.10</near><far>500</far></clip><save enabled="false"><path>output/rgb</path></save></camera>
+      </sensor>
+      <sensor name="depth" type="depth_camera">
+        <always_on>true</always_on><update_rate>10</update_rate><topic>synthetic/depth</topic>
+        <camera><horizontal_fov>1.0472</horizontal_fov><image><width>1280</width><height>720</height></image><clip><near>0.10</near><far>500</far></clip></camera>
+      </sensor>
+      <sensor name="semantic" type="segmentation">
+        <always_on>true</always_on><update_rate>10</update_rate><topic>synthetic/semantic</topic>
+        <segmentation_type>semantic</segmentation_type>
+        <camera><horizontal_fov>1.0472</horizontal_fov><image><width>1280</width><height>720</height><format>R8G8B8</format></image><clip><near>0.10</near><far>500</far></clip><save enabled="false"><path>output/semantic</path></save></camera>
+      </sensor>
+      <sensor name="instance" type="segmentation">
+        <always_on>true</always_on><update_rate>10</update_rate><topic>synthetic/instance</topic>
+        <segmentation_type>instance</segmentation_type>
+        <camera><horizontal_fov>1.0472</horizontal_fov><image><width>1280</width><height>720</height><format>R8G8B8</format></image><clip><near>0.10</near><far>500</far></clip><save enabled="false"><path>output/instance</path></save></camera>
+      </sensor>
+    </link>
+  </model>
+</sdf>

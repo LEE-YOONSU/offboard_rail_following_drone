@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="station_platform_12m">
+    <static>true</static>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>20</label></plugin>
+    <link name="platform">
+      <collision name="slab_collision"><pose>0 -4.55 0.29 0 0 0</pose><geometry><box><size>12 5.5 0.58</size></box></geometry></collision>
+      <visual name="slab"><pose>0 -4.55 0.29 0 0 0</pose><geometry><box><size>12 5.5 0.58</size></box></geometry><material><diffuse>0.70 0.72 0.72 1</diffuse><pbr><metal><albedo_map>model://station_platform_12m/materials/textures/platform_concrete_albedo.png</albedo_map><roughness>0.94</roughness><metalness>0</metalness></metal></pbr></material></visual>
+      <visual name="edge_fascia"><pose>0 -1.79 0.32 0 0 0</pose><geometry><box><size>12 0.10 0.64</size></box></geometry><material><diffuse>0.76 0.77 0.75 1</diffuse></material></visual>
+      <visual name="tactile_yellow"><pose>0 -2.20 0.591 0 0 0</pose><geometry><box><size>12 0.34 0.022</size></box></geometry><material><ambient>0.75 0.54 0.02 1</ambient><diffuse>0.96 0.71 0.04 1</diffuse><pbr><metal><roughness>0.8</roughness><metalness>0</metalness></metal></pbr></material></visual>
+      <visual name="safety_line"><pose>0 -1.92 0.594 0 0 0</pose><geometry><box><size>12 0.055 0.026</size></box></geometry><material><diffuse>0.90 0.89 0.80 1</diffuse></material></visual>
+      <collision name="column_left_collision"><pose>-3 -5.58 2.43 0 0 0</pose><geometry><box><size>0.22 0.22 3.68</size></box></geometry></collision>
+      <collision name="column_right_collision"><pose>3 -5.58 2.43 0 0 0</pose><geometry><box><size>0.22 0.22 3.68</size></box></geometry></collision>
+      <visual name="column_left"><pose>-3 -5.58 2.43 0 0 0</pose><geometry><box><size>0.22 0.22 3.68</size></box></geometry><material><diffuse>0.78 0.80 0.80 1</diffuse><pbr><metal><roughness>0.34</roughness><metalness>0.72</metalness></metal></pbr></material></visual>
+      <visual name="column_right"><pose>3 -5.58 2.43 0 0 0</pose><geometry><box><size>0.22 0.22 3.68</size></box></geometry><material><diffuse>0.78 0.80 0.80 1</diffuse><pbr><metal><roughness>0.34</roughness><metalness>0.72</metalness></metal></pbr></material></visual>
+      <visual name="roof"><pose>0 -4.55 4.20 0.028 0 0</pose><geometry><box><size>12 5.75 0.15</size></box></geometry><material><diffuse>0.68 0.72 0.73 1</diffuse><pbr><metal><roughness>0.44</roughness><metalness>0.58</metalness></metal></pbr></material></visual>
+      <visual name="roof_edge"><pose>0 -1.69 4.28 0 0 0</pose><geometry><box><size>12 0.15 0.36</size></box></geometry><material><diffuse>0.90 0.91 0.89 1</diffuse></material></visual>
+      <visual name="beam_left"><pose>-3 -4.55 4.00 0 0 0</pose><geometry><box><size>0.20 5.3 0.24</size></box></geometry><material><diffuse>0.38 0.42 0.43 1</diffuse></material></visual>
+      <visual name="beam_right"><pose>3 -4.55 4.00 0 0 0</pose><geometry><box><size>0.20 5.3 0.24</size></box></geometry><material><diffuse>0.38 0.42 0.43 1</diffuse></material></visual>
+      <visual name="light_a"><pose>-3 -3.65 3.93 0 0 0</pose><geometry><box><size>2.2 0.16 0.05</size></box></geometry><material><emissive>0.92 0.95 0.90 1</emissive><diffuse>0.92 0.95 0.90 1</diffuse></material></visual>
+      <visual name="light_b"><pose>3 -3.65 3.93 0 0 0</pose><geometry><box><size>2.2 0.16 0.05</size></box></geometry><material><emissive>0.92 0.95 0.90 1</emissive><diffuse>0.92 0.95 0.90 1</diffuse></material></visual>
+    </link>
+  </model>
+</sdf>

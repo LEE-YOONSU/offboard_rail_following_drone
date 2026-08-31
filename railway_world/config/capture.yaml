@@ -1,0 +1,16 @@
+camera:
+  resolution: [1280, 720]
+  horizontal_fov_rad: 1.0472
+  near_clip_m: 0.10
+  far_clip_m: 500.0
+  rate_hz: 10
+topics:
+  rgb: /synthetic/rgb
+  depth: /synthetic/depth
+  semantic_color: /synthetic/semantic/colored_map
+  semantic_labels: /synthetic/semantic/labels_map
+  instance_color: /synthetic/instance/colored_map
+  instance_labels: /synthetic/instance/labels_map
+notes:
+  - RGB, depth, semantic and instance sensors share the same pose and intrinsics.
+  - File saving is disabled in SDF by default; subscribe to topics or enable each save block.

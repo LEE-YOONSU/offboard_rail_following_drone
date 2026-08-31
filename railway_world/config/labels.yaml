@@ -1,0 +1,9 @@
+background: 0
+track_and_ballast: 10
+platform_structure: 20
+platform_furniture: 21
+catenary_and_power: 30
+railside_infrastructure: 40
+building: 50
+vegetation: 60
+level_crossing: 70

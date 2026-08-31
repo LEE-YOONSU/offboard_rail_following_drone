@@ -1,0 +1,68 @@
+site:
+  id: KR_CONVENTIONAL_REFERENCE_001
+  description: Synthetic reference segment based on Korean conventional electrified railway standards
+  coordinate_frame: LOCAL_ENU
+  geodetic_origin:
+    latitude_deg: 37.5665
+    longitude_deg: 126.9780
+    elevation_m: 38.0
+    status: synthetic_simulation_origin
+  note: Synthetic GNSS origin for PX4 NavSat; replace it with surveyed coordinates before claiming site-specific twin fidelity.
+
+alignment:
+  axis: X_then_left_curve
+  start_chainage_m: 0.0
+  end_chainage_m: 500.0
+  gauge_m: 1.435
+  track_count: 1
+  tangent_length_m: 252.0
+  curve_length_m: 248.0
+  curve_radius_m: 400.0
+  curve_direction: left
+  curvature_1_per_m: 0.0025
+  gradient_per_mille: 0.0
+
+track:
+  rail_profile: 50N_visual_approximation
+  sleeper_type: PC
+  sleeper_length_m: 2.4
+  sleeper_spacing_m: 0.6
+  ballast_type: unwashed_for_design_speed_le_200_kmh
+
+overhead_contact_system:
+  type: simple_catenary
+  nominal_contact_height_above_rail_m: 5.2
+  system_height_m: 0.96
+  nominal_span_m: 48.0
+  dropper_spacing_m: 5.0
+  support_stagger_m: 0.2
+
+station:
+  platform_start_chainage_m: 130.0
+  platform_end_chainage_m: 250.0
+  platform_height_m: 0.58
+  platform_width_m: 5.5
+  canopy_clear_height_m: 3.4
+
+level_crossing:
+  chainage_m: 432.0
+  road_width_m: 8.0
+  road_orientation_deg: 90.0
+
+turnout:
+  mainline_chainage_m: 330.0
+  diverging_direction: right
+  siding_length_m: 68.0
+  electrified: false
+  components: [point_blades, frog_check_rails, switch_motor, buffer_stop]
+
+synthetic_data:
+  label_map: config/labels.yaml
+  active_world_cameras: 0
+  sensor_template: models/synthetic_sensor_rig/model.sdf
+  intended_sensor_host: future_drone_model
+  intended_modalities: [rgb, depth, semantic_segmentation, instance_segmentation]
+
+provenance:
+  dimensional_basis: docs/reference_basis.md
+  asset_register: metadata/asset_register.csv

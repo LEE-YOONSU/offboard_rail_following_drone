@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="pc_sleeper">
+    <static>true</static>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>10</label></plugin>
+    <link name="sleeper">
+      <collision name="sleeper_collision"><pose>0 0 0.09 0 0 0</pose><geometry><box><size>0.30 2.40 0.18</size></box></geometry></collision>
+      <visual name="concrete"><geometry><mesh><uri>model://pc_sleeper/meshes/pc_sleeper_concrete.obj</uri></mesh></geometry><material><ambient>0.47 0.47 0.45 1</ambient><diffuse>0.68 0.68 0.65 1</diffuse><pbr><metal><roughness>0.92</roughness><metalness>0</metalness></metal></pbr></material></visual>
+      <visual name="hardware"><geometry><mesh><uri>model://pc_sleeper/meshes/pc_sleeper_hardware.obj</uri></mesh></geometry><material><ambient>0.035 0.038 0.036 1</ambient><diffuse>0.10 0.11 0.10 1</diffuse><specular>0.20 0.20 0.20 1</specular><pbr><metal><roughness>0.66</roughness><metalness>0.28</metalness></metal></pbr></material></visual>
+      <visual name="clips"><geometry><mesh><uri>model://pc_sleeper/meshes/pc_sleeper_clips.obj</uri></mesh></geometry><material><ambient>0.16 0.055 0.015 1</ambient><diffuse>0.40 0.14 0.035 1</diffuse><specular>0.24 0.18 0.12 1</specular><pbr><metal><roughness>0.52</roughness><metalness>0.62</metalness></metal></pbr></material></visual>
+    </link>
+  </model>
+</sdf>

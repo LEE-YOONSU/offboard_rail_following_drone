@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="catenary_span_24m">
+    <static>true</static>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>30</label></plugin>
+    <include><uri>model://catenary_mast</uri><name>mast_left</name><pose>-12 0 0 0 0 0</pose></include>
+    <link name="conductors">
+      <visual name="contact"><pose>0 0 5.812 0 1.570796 0</pose><geometry><cylinder><radius>0.011</radius><length>24</length></cylinder></geometry><material><diffuse>0.58 0.33 0.11 1</diffuse><specular>0.55 0.40 0.20 1</specular></material></visual>
+      <visual name="messenger_0"><pose>-9 0 6.667 0 1.59162 0</pose><geometry><cylinder><radius>0.010</radius><length>6.001</length></cylinder></geometry><material><diffuse>0.34 0.25 0.15 1</diffuse></material></visual>
+      <visual name="messenger_1"><pose>-3 0 6.542 0 1.59162 0</pose><geometry><cylinder><radius>0.010</radius><length>6.001</length></cylinder></geometry><material><diffuse>0.34 0.25 0.15 1</diffuse></material></visual>
+      <visual name="messenger_2"><pose>3 0 6.542 0 1.54997 0</pose><geometry><cylinder><radius>0.010</radius><length>6.001</length></cylinder></geometry><material><diffuse>0.34 0.25 0.15 1</diffuse></material></visual>
+      <visual name="messenger_3"><pose>9 0 6.667 0 1.54997 0</pose><geometry><cylinder><radius>0.010</radius><length>6.001</length></cylinder></geometry><material><diffuse>0.34 0.25 0.15 1</diffuse></material></visual>
+      <visual name="dropper_m8"><pose>-8 0 6.218 0 0 0</pose><geometry><cylinder><radius>0.006</radius><length>0.812</length></cylinder></geometry><material><diffuse>0.26 0.22 0.17 1</diffuse></material></visual>
+      <visual name="dropper_m4"><pose>-4 0 6.168 0 0 0</pose><geometry><cylinder><radius>0.006</radius><length>0.712</length></cylinder></geometry><material><diffuse>0.26 0.22 0.17 1</diffuse></material></visual>
+      <visual name="dropper_0"><pose>0 0 6.143 0 0 0</pose><geometry><cylinder><radius>0.006</radius><length>0.662</length></cylinder></geometry><material><diffuse>0.26 0.22 0.17 1</diffuse></material></visual>
+      <visual name="dropper_p4"><pose>4 0 6.168 0 0 0</pose><geometry><cylinder><radius>0.006</radius><length>0.712</length></cylinder></geometry><material><diffuse>0.26 0.22 0.17 1</diffuse></material></visual>
+      <visual name="dropper_p8"><pose>8 0 6.218 0 0 0</pose><geometry><cylinder><radius>0.006</radius><length>0.812</length></cylinder></geometry><material><diffuse>0.26 0.22 0.17 1</diffuse></material></visual>
+      <visual name="feeder"><pose>0 4.15 7.18 0 1.570796 0</pose><geometry><cylinder><radius>0.018</radius><length>24</length></cylinder></geometry><material><diffuse>0.16 0.15 0.13 1</diffuse></material></visual>
+      <visual name="protective_wire"><pose>0 3.20 6.82 0 1.570796 0</pose><geometry><cylinder><radius>0.014</radius><length>24</length></cylinder></geometry><material><diffuse>0.18 0.18 0.17 1</diffuse></material></visual>
+    </link>
+  </model>
+</sdf>

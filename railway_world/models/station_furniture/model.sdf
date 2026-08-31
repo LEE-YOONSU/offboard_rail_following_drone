@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="station_furniture">
+    <static>true</static>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>21</label></plugin>
+    <link name="furniture">
+      <visual name="bench_seat"><pose>-2 -5.35 1.04 0 0 0</pose><geometry><box><size>2.8 0.55 0.10</size></box></geometry><material><diffuse>0.48 0.36 0.23 1</diffuse><pbr><metal><roughness>0.65</roughness><metalness>0.05</metalness></metal></pbr></material></visual>
+      <visual name="bench_back"><pose>-2 -5.62 1.48 -0.15 0 0</pose><geometry><box><size>2.8 0.09 0.75</size></box></geometry><material><diffuse>0.48 0.36 0.23 1</diffuse></material></visual>
+      <visual name="bench_leg_l"><pose>-3 -5.35 0.80 0 0 0</pose><geometry><box><size>0.10 0.48 0.44</size></box></geometry><material><diffuse>0.20 0.22 0.23 1</diffuse></material></visual>
+      <visual name="bench_leg_r"><pose>-1 -5.35 0.80 0 0 0</pose><geometry><box><size>0.10 0.48 0.44</size></box></geometry><material><diffuse>0.20 0.22 0.23 1</diffuse></material></visual>
+      <visual name="glass_a"><pose>2.4 -6.35 2.18 0 0 0</pose><geometry><box><size>2.8 0.045 2.55</size></box></geometry><material><ambient>0.30 0.48 0.52 0.34</ambient><diffuse>0.45 0.68 0.72 0.30</diffuse><specular>0.8 0.8 0.8 1</specular></material><transparency>0.68</transparency></visual>
+      <visual name="glass_post_l"><pose>0.95 -6.35 2.18 0 0 0</pose><geometry><box><size>0.09 0.10 2.65</size></box></geometry><material><diffuse>0.72 0.75 0.75 1</diffuse></material></visual>
+      <visual name="glass_post_r"><pose>3.85 -6.35 2.18 0 0 0</pose><geometry><box><size>0.09 0.10 2.65</size></box></geometry><material><diffuse>0.72 0.75 0.75 1</diffuse></material></visual>
+      <visual name="sign_post"><pose>0 -4.40 2.70 0 0 0</pose><geometry><cylinder><radius>0.045</radius><length>2.7</length></cylinder></geometry><material><diffuse>0.25 0.27 0.28 1</diffuse></material></visual>
+      <visual name="station_sign"><pose>0 -4.40 3.50 0 0 0</pose><geometry><box><size>2.25 0.10 0.66</size></box></geometry><material><diffuse>0.05 0.23 0.55 1</diffuse></material></visual>
+      <visual name="sign_white_band"><pose>0 -4.34 3.50 0 0 0</pose><geometry><box><size>1.82 0.025 0.23</size></box></geometry><material><diffuse>0.94 0.95 0.93 1</diffuse></material></visual>
+      <visual name="led_board"><pose>3.5 -3.50 3.43 0 0 0</pose><geometry><box><size>3.8 0.12 0.72</size></box></geometry><material><diffuse>0.025 0.032 0.030 1</diffuse></material></visual>
+      <visual name="led_green"><pose>3.5 -3.43 3.43 0 0 0</pose><geometry><box><size>3.30 0.02 0.08</size></box></geometry><material><emissive>0.08 0.82 0.23 1</emissive><diffuse>0.08 0.82 0.23 1</diffuse></material></visual>
+      <visual name="bin"><pose>-4.5 -5.7 0.95 0 0 0</pose><geometry><box><size>0.52 0.52 0.78</size></box></geometry><material><diffuse>0.20 0.23 0.24 1</diffuse></material></visual>
+    </link>
+  </model>
+</sdf>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="catenary_48m">
+    <static>true</static>
+    <link name="overhead_lines">
+      <visual name="mast"><pose>0 2.75 3.25 0 0 0</pose><geometry><cylinder><radius>0.10</radius><length>6.5</length></cylinder></geometry><material><ambient>0.28 0.30 0.29 1</ambient><diffuse>0.48 0.51 0.49 1</diffuse></material></visual>
+      <visual name="mast_base"><pose>0 2.75 0.35 0 0 0</pose><geometry><box><size>0.65 0.65 0.70</size></box></geometry><material><ambient>0.35 0.35 0.34 1</ambient><diffuse>0.55 0.55 0.52 1</diffuse></material></visual>
+      <visual name="crossarm"><pose>0 1.35 6.12 0 0 0</pose><geometry><box><size>0.12 3.0 0.12</size></box></geometry><material><ambient>0.25 0.27 0.26 1</ambient><diffuse>0.45 0.48 0.46 1</diffuse></material></visual>
+      <visual name="insulator"><pose>0 0.05 5.85 0 0 0</pose><geometry><cylinder><radius>0.07</radius><length>0.48</length></cylinder></geometry><material><ambient>0.18 0.26 0.17 1</ambient><diffuse>0.33 0.48 0.31 1</diffuse></material></visual>
+
+      <visual name="contact_wire"><pose>0 0 5.28 0 1.570796 0</pose><geometry><cylinder><radius>0.018</radius><length>48</length></cylinder></geometry><material><ambient>0.30 0.22 0.12 1</ambient><diffuse>0.55 0.40 0.20 1</diffuse></material></visual>
+      <visual name="messenger_wire"><pose>0 0 5.88 0 1.570796 0</pose><geometry><cylinder><radius>0.016</radius><length>48</length></cylinder></geometry><material><ambient>0.25 0.20 0.13 1</ambient><diffuse>0.48 0.36 0.20 1</diffuse></material></visual>
+      <visual name="dropper_m18"><pose>-18 0 5.58 0 0 0</pose><geometry><cylinder><radius>0.010</radius><length>0.60</length></cylinder></geometry><material><diffuse>0.40 0.31 0.18 1</diffuse></material></visual>
+      <visual name="dropper_m12"><pose>-12 0 5.58 0 0 0</pose><geometry><cylinder><radius>0.010</radius><length>0.60</length></cylinder></geometry><material><diffuse>0.40 0.31 0.18 1</diffuse></material></visual>
+      <visual name="dropper_m06"><pose>-6 0 5.58 0 0 0</pose><geometry><cylinder><radius>0.010</radius><length>0.60</length></cylinder></geometry><material><diffuse>0.40 0.31 0.18 1</diffuse></material></visual>
+      <visual name="dropper_000"><pose>0 0 5.58 0 0 0</pose><geometry><cylinder><radius>0.010</radius><length>0.60</length></cylinder></geometry><material><diffuse>0.40 0.31 0.18 1</diffuse></material></visual>
+      <visual name="dropper_p06"><pose>6 0 5.58 0 0 0</pose><geometry><cylinder><radius>0.010</radius><length>0.60</length></cylinder></geometry><material><diffuse>0.40 0.31 0.18 1</diffuse></material></visual>
+      <visual name="dropper_p12"><pose>12 0 5.58 0 0 0</pose><geometry><cylinder><radius>0.010</radius><length>0.60</length></cylinder></geometry><material><diffuse>0.40 0.31 0.18 1</diffuse></material></visual>
+      <visual name="dropper_p18"><pose>18 0 5.58 0 0 0</pose><geometry><cylinder><radius>0.010</radius><length>0.60</length></cylinder></geometry><material><diffuse>0.40 0.31 0.18 1</diffuse></material></visual>
+
+      <visual name="utility_pole"><pose>0 -5.2 2.8 0 0 0</pose><geometry><cylinder><radius>0.12</radius><length>5.6</length></cylinder></geometry><material><ambient>0.18 0.14 0.10 1</ambient><diffuse>0.30 0.23 0.16 1</diffuse></material></visual>
+      <visual name="utility_arm"><pose>0 -5.2 5.05 0 0 0</pose><geometry><box><size>0.15 1.5 0.12</size></box></geometry><material><diffuse>0.28 0.21 0.15 1</diffuse></material></visual>
+      <visual name="utility_wire_1"><pose>0 -4.65 4.95 0 1.570796 0</pose><geometry><cylinder><radius>0.012</radius><length>48</length></cylinder></geometry><material><diffuse>0.08 0.08 0.08 1</diffuse></material></visual>
+      <visual name="utility_wire_2"><pose>0 -5.20 5.00 0 1.570796 0</pose><geometry><cylinder><radius>0.012</radius><length>48</length></cylinder></geometry><material><diffuse>0.08 0.08 0.08 1</diffuse></material></visual>
+      <visual name="utility_wire_3"><pose>0 -5.75 4.95 0 1.570796 0</pose><geometry><cylinder><radius>0.012</radius><length>48</length></cylinder></geometry><material><diffuse>0.08 0.08 0.08 1</diffuse></material></visual>
+    </link>
+  </model>
+</sdf>

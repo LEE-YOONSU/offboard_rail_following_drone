@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="level_crossing">
+    <static>true</static>
+    <plugin filename="gz-sim-label-system" name="gz::sim::systems::Label"><label>70</label></plugin>
+    <link name="crossing">
+      <collision name="road_collision"><pose>0 0 0.12 0 0 0</pose><geometry><box><size>8.0 54 0.24</size></box></geometry></collision>
+      <visual name="road"><pose>0 0 0.12 0 0 0</pose><geometry><box><size>8.0 54 0.24</size></box></geometry><material><diffuse>0.32 0.32 0.31 1</diffuse><pbr><metal><albedo_map>model://level_crossing/materials/textures/asphalt_albedo.png</albedo_map><roughness>0.97</roughness><metalness>0</metalness></metal></pbr></material></visual>
+      <visual name="deck_center"><pose>0 0 0.565 0 0 0</pose><geometry><box><size>7.4 1.22 0.085</size></box></geometry><material><diffuse>0.16 0.17 0.17 1</diffuse><pbr><metal><roughness>0.90</roughness><metalness>0</metalness></metal></pbr></material></visual>
+      <visual name="deck_north"><pose>0 1.35 0.53 0 0 0</pose><geometry><box><size>7.4 1.32 0.12</size></box></geometry><material><diffuse>0.18 0.19 0.19 1</diffuse></material></visual>
+      <visual name="deck_south"><pose>0 -1.35 0.53 0 0 0</pose><geometry><box><size>7.4 1.32 0.12</size></box></geometry><material><diffuse>0.18 0.19 0.19 1</diffuse></material></visual>
+      <visual name="lane_left"><pose>-3.30 0 0.255 0 0 0</pose><geometry><box><size>0.10 54 0.025</size></box></geometry><material><diffuse>0.92 0.91 0.84 1</diffuse></material></visual>
+      <visual name="lane_right"><pose>3.30 0 0.255 0 0 0</pose><geometry><box><size>0.10 54 0.025</size></box></geometry><material><diffuse>0.92 0.91 0.84 1</diffuse></material></visual>
+      <visual name="stop_n"><pose>0 6.5 0.258 0 0 0</pose><geometry><box><size>6.6 0.28 0.026</size></box></geometry><material><diffuse>0.93 0.92 0.86 1</diffuse></material></visual>
+      <visual name="stop_s"><pose>0 -6.5 0.258 0 0 0</pose><geometry><box><size>6.6 0.28 0.026</size></box></geometry><material><diffuse>0.93 0.92 0.86 1</diffuse></material></visual>
+      <visual name="post_n"><pose>-4.25 5.15 1.15 0 0 0</pose><geometry><cylinder><radius>0.13</radius><length>2.30</length></cylinder></geometry><material><diffuse>0.16 0.17 0.17 1</diffuse></material></visual>
+      <visual name="post_s"><pose>4.25 -5.15 1.15 0 0 0</pose><geometry><cylinder><radius>0.13</radius><length>2.30</length></cylinder></geometry><material><diffuse>0.16 0.17 0.17 1</diffuse></material></visual>
+      <visual name="signal_head_n"><pose>-4.25 5.15 2.32 0 0 0</pose><geometry><box><size>0.62 0.30 0.76</size></box></geometry><material><diffuse>0.08 0.08 0.07 1</diffuse></material></visual>
+      <visual name="signal_head_s"><pose>4.25 -5.15 2.32 0 0 0</pose><geometry><box><size>0.62 0.30 0.76</size></box></geometry><material><diffuse>0.08 0.08 0.07 1</diffuse></material></visual>
+      <visual name="red_n1"><pose>-4.45 4.99 2.32 1.570796 0 0</pose><geometry><cylinder><radius>0.15</radius><length>0.04</length></cylinder></geometry><material><emissive>0.95 0.02 0.01 1</emissive><diffuse>0.95 0.02 0.01 1</diffuse></material></visual>
+      <visual name="red_n2"><pose>-4.05 4.99 2.32 1.570796 0 0</pose><geometry><cylinder><radius>0.15</radius><length>0.04</length></cylinder></geometry><material><diffuse>0.38 0.01 0.01 1</diffuse></material></visual>
+      <visual name="red_s1"><pose>4.05 -4.99 2.32 1.570796 0 0</pose><geometry><cylinder><radius>0.15</radius><length>0.04</length></cylinder></geometry><material><emissive>0.95 0.02 0.01 1</emissive><diffuse>0.95 0.02 0.01 1</diffuse></material></visual>
+      <visual name="red_s2"><pose>4.45 -4.99 2.32 1.570796 0 0</pose><geometry><cylinder><radius>0.15</radius><length>0.04</length></cylinder></geometry><material><diffuse>0.38 0.01 0.01 1</diffuse></material></visual>
+      <visual name="bar_n_white"><pose>-0.3 5.15 1.22 0 0 0</pose><geometry><box><size>7.7 0.15 0.15</size></box></geometry><material><diffuse>0.94 0.94 0.89 1</diffuse></material></visual>
+      <visual name="bar_s_white"><pose>0.3 -5.15 1.22 0 0 0</pose><geometry><box><size>7.7 0.15 0.15</size></box></geometry><material><diffuse>0.94 0.94 0.89 1</diffuse></material></visual>
+      <visual name="bar_n_red1"><pose>-2.8 5.145 1.225 0 0 0</pose><geometry><box><size>0.75 0.17 0.17</size></box></geometry><material><diffuse>0.90 0.04 0.03 1</diffuse></material></visual>
+      <visual name="bar_n_red2"><pose>-0.9 5.145 1.225 0 0 0</pose><geometry><box><size>0.75 0.17 0.17</size></box></geometry><material><diffuse>0.90 0.04 0.03 1</diffuse></material></visual>
+      <visual name="bar_n_red3"><pose>1.0 5.145 1.225 0 0 0</pose><geometry><box><size>0.75 0.17 0.17</size></box></geometry><material><diffuse>0.90 0.04 0.03 1</diffuse></material></visual>
+      <visual name="bar_n_red4"><pose>2.9 5.145 1.225 0 0 0</pose><geometry><box><size>0.75 0.17 0.17</size></box></geometry><material><diffuse>0.90 0.04 0.03 1</diffuse></material></visual>
+      <visual name="bar_s_red1"><pose>-2.9 -5.145 1.225 0 0 0</pose><geometry><box><size>0.75 0.17 0.17</size></box></geometry><material><diffuse>0.90 0.04 0.03 1</diffuse></material></visual>
+      <visual name="bar_s_red2"><pose>-1.0 -5.145 1.225 0 0 0</pose><geometry><box><size>0.75 0.17 0.17</size></box></geometry><material><diffuse>0.90 0.04 0.03 1</diffuse></material></visual>
+      <visual name="bar_s_red3"><pose>0.9 -5.145 1.225 0 0 0</pose><geometry><box><size>0.75 0.17 0.17</size></box></geometry><material><diffuse>0.90 0.04 0.03 1</diffuse></material></visual>
+      <visual name="bar_s_red4"><pose>2.8 -5.145 1.225 0 0 0</pose><geometry><box><size>0.75 0.17 0.17</size></box></geometry><material><diffuse>0.90 0.04 0.03 1</diffuse></material></visual>
+      <visual name="crossbuck_n_a"><pose>-4.25 5.15 3.05 0 0.60 0</pose><geometry><box><size>1.15 0.10 0.13</size></box></geometry><material><diffuse>0.94 0.94 0.90 1</diffuse></material></visual>
+      <visual name="crossbuck_n_b"><pose>-4.25 5.15 3.05 0 -0.60 0</pose><geometry><box><size>1.15 0.10 0.13</size></box></geometry><material><diffuse>0.94 0.94 0.90 1</diffuse></material></visual>
+      <visual name="crossbuck_s_a"><pose>4.25 -5.15 3.05 0 0.60 0</pose><geometry><box><size>1.15 0.10 0.13</size></box></geometry><material><diffuse>0.94 0.94 0.90 1</diffuse></material></visual>
+      <visual name="crossbuck_s_b"><pose>4.25 -5.15 3.05 0 -0.60 0</pose><geometry><box><size>1.15 0.10 0.13</size></box></geometry><material><diffuse>0.94 0.94 0.90 1</diffuse></material></visual>
+    </link>
+  </model>
+</sdf>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.9">
+  <model name="x500_rail_down_cam_static">
+    <static>true</static>
+    <include merge="true">
+      <uri>model://x500_rail_down_cam</uri>
+    </include>
+  </model>
+</sdf>
