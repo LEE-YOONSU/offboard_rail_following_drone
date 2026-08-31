@@ -132,7 +132,18 @@ gz sim --versions
 
 ## 데이터셋과 Git 관리
 
-`datasets/`와 `output/`은 생성 결과라서 Git에 포함되지 않습니다. 현재 로컬 데이터는 그대로 보존되지만 `git clone`으로는 내려받아지지 않습니다. 기존 데이터셋까지 옮겨야 한다면 GitHub Release, Git LFS 또는 별도 데이터 스토리지를 사용하세요.
+`datasets/`와 `output/`은 생성 결과라서 Git 본문에는 포함되지 않습니다. 데이터셋은 [`datasets-20260820` GitHub Release](https://github.com/LEE-YOONSU/offboard_rail_following_drone/releases/tag/datasets-20260820)에서 내려받습니다.
+
+저장소를 복제하고 `railway_world` 폴더로 이동한 뒤 다음 명령을 실행합니다.
+
+```bash
+curl -LO https://github.com/LEE-YOONSU/offboard_rail_following_drone/releases/download/datasets-20260820/railway_world_datasets_20260820.tar.gz
+curl -LO https://github.com/LEE-YOONSU/offboard_rail_following_drone/releases/download/datasets-20260820/railway_world_datasets_20260820.tar.gz.sha256
+sha256sum -c railway_world_datasets_20260820.tar.gz.sha256
+tar -xzf railway_world_datasets_20260820.tar.gz
+```
+
+검증 결과가 `OK`이면 현재 폴더 아래에 `datasets/`가 생성됩니다. 압축 파일은 606,260,464바이트이며 SHA-256은 `e9c5c083cb15f2f85468d2638fa534ed8d518fa155f67f1d3fb1003ca6722a17`입니다.
 
 공개 저장소로 만들기 전에 `metadata/`와 문서에 외부 공개가 곤란한 현장 정보가 없는지 확인하세요.
 

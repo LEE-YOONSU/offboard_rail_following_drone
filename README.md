@@ -26,4 +26,4 @@ cd railway_world
 ./run.sh
 ```
 
-철도 환경의 생성 데이터셋과 렌더 출력은 저장소 용량을 줄이기 위해 Git에서 제외되어 있습니다.
+철도 환경의 생성 데이터셋은 [`datasets-20260820` Release](https://github.com/LEE-YOONSU/offboard_rail_following_drone/releases/tag/datasets-20260820)에서 내려받을 수 있으며, 렌더 출력은 Git에서 제외되어 있습니다.

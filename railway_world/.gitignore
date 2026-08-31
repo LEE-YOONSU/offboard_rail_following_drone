@@ -1,6 +1,8 @@
 # Generated captures and datasets are intentionally kept outside Git.
 /datasets/
 /output/
+/railway_world_datasets_*.tar.gz
+/railway_world_datasets_*.tar.gz.sha256
 
 # Python caches and local environments
 __pycache__/
@@ -20,4 +22,3 @@ venv/
 *.log
 *.tmp
 *.swp
-
