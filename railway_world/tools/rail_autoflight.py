@@ -1,0 +1,596 @@
+#!/usr/bin/env python3
+"""Vision-guided PX4 SITL rail following using a Gazebo RGB camera.
+
+The default mode is a safe perception-only dry run. Pass ``--execute`` only
+after checking the overlay and command signs in the simulator.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import queue
+import signal
+import threading
+import time
+from dataclasses import dataclass
+from enum import Enum, auto
+from pathlib import Path
+from typing import Optional
+
+import cv2
+import numpy as np
+from gz.msgs10.image_pb2 import Image as GzImage
+from gz.transport13 import Node
+from PIL import Image as PilImage
+from pymavlink import mavutil
+from ultralytics import YOLO
+
+
+def clamp(value: float, low: float, high: float) -> float:
+    return max(low, min(high, value))
+
+
+def wrap_pi(angle: float) -> float:
+    return (angle + math.pi) % (2.0 * math.pi) - math.pi
+
+
+@dataclass(frozen=True)
+class RailEstimate:
+    timestamp: float
+    confidence: float
+    center_error: float
+    heading_error: float
+    coverage: float
+    frame_rgb: np.ndarray
+    overlay_rgb: np.ndarray
+
+
+class MissionState(Enum):
+    DRY_RUN = auto()
+    PREFLIGHT = auto()
+    TAKEOFF = auto()
+    OUTBOUND = auto()
+    TURNAROUND = auto()
+    INBOUND = auto()
+    HOLD = auto()
+    ABORT = auto()
+
+
+class RailPerception:
+    """Keep Gazebo callbacks light and run YOLO on a worker thread."""
+
+    def __init__(
+        self,
+        model_path: Path,
+        confidence: float,
+        image_size: int,
+        output: Path,
+    ) -> None:
+        self.model = YOLO(str(model_path))
+        self.confidence = confidence
+        self.image_size = image_size
+        self.output = output
+        self.output.mkdir(parents=True, exist_ok=True)
+        self._frames: queue.Queue[tuple[float, np.ndarray]] = queue.Queue(maxsize=1)
+        self._lock = threading.Lock()
+        self._latest: Optional[RailEstimate] = None
+        self._last_frame_time = 0.0
+        self._running = True
+        self._worker = threading.Thread(target=self._run, name="rail-yolo", daemon=True)
+        self._worker.start()
+
+    @property
+    def latest(self) -> Optional[RailEstimate]:
+        with self._lock:
+            return self._latest
+
+    @property
+    def last_frame_time(self) -> float:
+        with self._lock:
+            return self._last_frame_time
+
+    def submit(self, msg: GzImage) -> None:
+        expected = msg.width * msg.height * 3
+        if msg.width <= 0 or msg.height <= 0 or len(msg.data) < expected:
+            return
+        frame = np.frombuffer(msg.data[:expected], dtype=np.uint8).reshape(
+            msg.height, msg.width, 3
+        ).copy()
+        item = (time.monotonic(), frame)
+        with self._lock:
+            self._last_frame_time = item[0]
+        try:
+            self._frames.put_nowait(item)
+        except queue.Full:
+            try:
+                self._frames.get_nowait()
+            except queue.Empty:
+                pass
+            self._frames.put_nowait(item)
+
+    def close(self) -> None:
+        self._running = False
+        self._worker.join(timeout=3.0)
+
+    def _run(self) -> None:
+        while self._running:
+            try:
+                timestamp, frame = self._frames.get(timeout=0.2)
+            except queue.Empty:
+                continue
+            result = self.model.predict(
+                frame, imgsz=self.image_size, conf=self.confidence, verbose=False
+            )[0]
+            estimate = self._estimate(timestamp, frame, result)
+            if estimate is not None:
+                with self._lock:
+                    self._latest = estimate
+
+    @staticmethod
+    def _estimate(timestamp: float, frame: np.ndarray, result) -> Optional[RailEstimate]:
+        if result.masks is None or result.boxes is None or len(result.boxes) == 0:
+            return None
+
+        confidences = result.boxes.conf.detach().cpu().numpy()
+        best = int(np.argmax(confidences))
+        mask_small = result.masks.data[best].detach().cpu().numpy()
+        height, width = frame.shape[:2]
+        mask = cv2.resize(mask_small, (width, height), interpolation=cv2.INTER_LINEAR) > 0.5
+
+        # Estimate the corridor centre independently in each image row. This is
+        # more stable for a wide rail-bed mask than fitting all mask pixels.
+        rows: list[float] = []
+        centers: list[float] = []
+        min_run = max(8, int(width * 0.02))
+        for y in range(int(height * 0.10), int(height * 0.96), 4):
+            xs = np.flatnonzero(mask[y])
+            if xs.size < min_run:
+                continue
+            # Keep only the widest contiguous mask segment in this row. At a
+            # turnout the diverging siding shows up as a separate segment; using
+            # the extremes (xs[0], xs[-1]) would drag the centre toward it.
+            breaks = np.flatnonzero(np.diff(xs) > 1)
+            seg_starts = np.concatenate(([0], breaks + 1))
+            seg_ends = np.concatenate((breaks, [xs.size - 1]))
+            widest = int(np.argmax(seg_ends - seg_starts))
+            x0 = float(xs[seg_starts[widest]])
+            x1 = float(xs[seg_ends[widest]])
+            if (x1 - x0) < min_run:
+                continue
+            rows.append(float(y))
+            centers.append((x0 + x1) * 0.5)
+        if len(rows) < 12:
+            return None
+
+        slope, intercept = np.polyfit(np.asarray(rows), np.asarray(centers), 1)
+        lookahead_y = height * 0.35
+        lookahead_x = slope * lookahead_y + intercept
+        center_error = (lookahead_x - width * 0.5) / (width * 0.5)
+        # Image top is the configured forward look direction.
+        heading_error = math.atan2(-float(slope), 1.0)
+        coverage = float(np.count_nonzero(mask)) / float(mask.size)
+
+        overlay = frame.copy()
+        tint = np.zeros_like(overlay)
+        tint[:, :, 2] = 255
+        overlay[mask] = cv2.addWeighted(overlay[mask], 0.55, tint[mask], 0.45, 0)
+        x_bottom = int(slope * (height - 1) + intercept)
+        x_top = int(intercept)
+        cv2.line(overlay, (x_bottom, height - 1), (x_top, 0), (0, 255, 0), 4)
+        cv2.line(overlay, (width // 2, 0), (width // 2, height - 1), (255, 255, 0), 2)
+        cv2.circle(overlay, (int(lookahead_x), int(lookahead_y)), 9, (255, 0, 0), -1)
+
+        return RailEstimate(
+            timestamp=timestamp,
+            confidence=float(confidences[best]),
+            center_error=float(center_error),
+            heading_error=float(heading_error),
+            coverage=coverage,
+            frame_rgb=frame,
+            overlay_rgb=overlay,
+        )
+
+
+class Autoflight:
+    def __init__(self, args: argparse.Namespace) -> None:
+        self.args = args
+        self.running = True
+        self.state = MissionState.PREFLIGHT if args.execute else MissionState.DRY_RUN
+        self.state_since = time.monotonic()
+        self.perception = RailPerception(
+            args.model, args.confidence, args.image_size, args.output
+        )
+        self.gz_node = Node()
+        self.gz_node.subscribe(GzImage, args.camera_topic, self.perception.submit)
+
+        self.mav = mavutil.mavlink_connection(
+            f"udpin:127.0.0.1:{args.mavlink_port}", source_system=250
+        )
+        self.target_system = 1
+        self.target_component = 1
+        self.vehicle_armed = False
+        self.vehicle_offboard = False
+        self.local_position: Optional[tuple[float, float, float]] = None
+        self.attitude_yaw: Optional[float] = None
+        self.home_position: Optional[tuple[float, float, float]] = None
+        self.last_position: Optional[tuple[float, float]] = None
+        self.outbound_distance = 0.0
+        self.inbound_distance = 0.0
+        self.turn_target_yaw: Optional[float] = None
+        self.last_detection_time = 0.0
+        self.last_capture_distance = -args.capture_spacing
+        self.capture_index = 0
+        self.capture_log = None
+        self.last_status = 0.0
+        self.last_mode_request = 0.0
+
+        capture_dir = args.output / "captures"
+        capture_dir.mkdir(parents=True, exist_ok=True)
+        self.capture_dir = capture_dir
+        existing_indices = []
+        for path in capture_dir.glob("*.png"):
+            try:
+                existing_indices.append(int(path.stem.rsplit("_", 1)[1]))
+            except (IndexError, ValueError):
+                continue
+        self.capture_index = max(existing_indices, default=-1) + 1
+        self.capture_log = (args.output / "captures.jsonl").open("a", encoding="utf-8")
+
+        # Numbered overlay frames for assembling a flight video (execute mode too).
+        self.overlay_dir = args.output / "overlay_frames"
+        self.overlay_dir.mkdir(parents=True, exist_ok=True)
+        self.overlay_index = 0
+        self.last_overlay_save = 0.0
+
+    def transition(self, state: MissionState, reason: str) -> None:
+        if self.state == state:
+            return
+        print(f"STATE {self.state.name} -> {state.name}: {reason}", flush=True)
+        self.state = state
+        self.state_since = time.monotonic()
+        self.last_position = None
+        if state in (MissionState.OUTBOUND, MissionState.INBOUND):
+            # Give the rail-loss watchdog a full grace period to acquire the
+            # corridor after entering a tracking leg; otherwise the very first
+            # frame without a detection trips "rail detection lost" immediately
+            # (last_detection_time still 0).
+            self.last_detection_time = self.state_since
+
+    def poll_mavlink(self) -> None:
+        while True:
+            msg = self.mav.recv_match(blocking=False)
+            if msg is None:
+                return
+            msg_type = msg.get_type()
+            if msg_type == "HEARTBEAT" and msg.get_srcSystem() != 255:
+                self.target_system = msg.get_srcSystem()
+                self.target_component = msg.get_srcComponent()
+                self.vehicle_armed = bool(
+                    msg.base_mode & mavutil.mavlink.MAV_MODE_FLAG_SAFETY_ARMED
+                )
+                px4_main_mode = (int(msg.custom_mode) >> 16) & 0xFF
+                self.vehicle_offboard = px4_main_mode == 6
+            elif msg_type == "LOCAL_POSITION_NED":
+                self.local_position = (float(msg.x), float(msg.y), float(msg.z))
+            elif msg_type == "ATTITUDE":
+                self.attitude_yaw = float(msg.yaw)
+
+    def request_streams(self) -> None:
+        self.mav.mav.command_long_send(
+            self.target_system,
+            self.target_component,
+            mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,
+            0,
+            mavutil.mavlink.MAVLINK_MSG_ID_LOCAL_POSITION_NED,
+            50_000,
+            0, 0, 0, 0, 0,
+        )
+        self.mav.mav.command_long_send(
+            self.target_system,
+            self.target_component,
+            mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,
+            0,
+            mavutil.mavlink.MAVLINK_MSG_ID_ATTITUDE,
+            50_000,
+            0, 0, 0, 0, 0,
+        )
+
+    def send_velocity(self, forward: float, right: float, down: float, yaw_rate: float) -> None:
+        type_mask = (
+            (1 << 0) | (1 << 1) | (1 << 2) |
+            (1 << 6) | (1 << 7) | (1 << 8) | (1 << 10)
+        )
+        self.mav.mav.set_position_target_local_ned_send(
+            int(time.monotonic() * 1000) & 0xFFFFFFFF,
+            self.target_system,
+            self.target_component,
+            mavutil.mavlink.MAV_FRAME_BODY_NED,
+            type_mask,
+            0, 0, 0,
+            float(forward), float(right), float(down),
+            0, 0, 0,
+            0, float(yaw_rate),
+        )
+
+    def arm_and_offboard(self) -> None:
+        # PX4 custom main mode 6 is OFFBOARD. Sending it directly avoids relying
+        # on a dialect-specific string mode mapping in pymavlink.
+        self.mav.mav.set_mode_send(
+            self.target_system,
+            mavutil.mavlink.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
+            6 << 16,
+        )
+        self.mav.mav.command_long_send(
+            self.target_system,
+            self.target_component,
+            mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM,
+            0,
+            1, 0, 0, 0, 0, 0, 0,
+        )
+
+    def update_distance(self) -> None:
+        if self.local_position is None:
+            return
+        x, y, _ = self.local_position
+        if self.last_position is not None:
+            step = math.hypot(x - self.last_position[0], y - self.last_position[1])
+            if step < 2.0:
+                if self.state == MissionState.OUTBOUND:
+                    self.outbound_distance += step
+                elif self.state == MissionState.INBOUND:
+                    self.inbound_distance += step
+        self.last_position = (x, y)
+
+    def guidance(self, estimate: RailEstimate) -> tuple[float, float]:
+        right = self.args.lateral_sign * clamp(
+            self.args.center_kp * estimate.center_error,
+            -self.args.max_lateral_speed,
+            self.args.max_lateral_speed,
+        )
+        yaw_rate = self.args.yaw_sign * clamp(
+            self.args.heading_kp * estimate.heading_error,
+            -self.args.max_yaw_rate,
+            self.args.max_yaw_rate,
+        )
+        return right, yaw_rate
+
+    def altitude_down_speed(self) -> float:
+        if self.local_position is None or self.home_position is None:
+            return 0.0
+        target_z = self.home_position[2] - self.args.height
+        return clamp(
+            self.args.altitude_kp * (target_z - self.local_position[2]),
+            -self.args.max_vertical_speed,
+            self.args.max_vertical_speed,
+        )
+
+    def maybe_capture(self, estimate: RailEstimate) -> None:
+        distance = self.outbound_distance if self.state == MissionState.OUTBOUND else self.inbound_distance
+        if distance - self.last_capture_distance < self.args.capture_spacing:
+            return
+        self.last_capture_distance = distance
+        direction = "outbound" if self.state == MissionState.OUTBOUND else "inbound"
+        filename = f"{direction}_{self.capture_index:06d}.png"
+        PilImage.fromarray(estimate.frame_rgb, "RGB").save(
+            self.capture_dir / filename, compress_level=3
+        )
+        record = {
+            "index": self.capture_index,
+            "direction": direction,
+            "distance_m": round(distance, 3),
+            "confidence": round(estimate.confidence, 4),
+            "center_error": round(estimate.center_error, 5),
+            "heading_error_rad": round(estimate.heading_error, 5),
+            "local_position_ned": self.local_position,
+            "file": f"captures/{filename}",
+        }
+        self.capture_log.write(json.dumps(record, ensure_ascii=False) + "\n")
+        self.capture_log.flush()
+        self.capture_index += 1
+
+    def save_debug(self, estimate: RailEstimate) -> None:
+        PilImage.fromarray(estimate.overlay_rgb, "RGB").save(
+            self.args.output / "latest_overlay.jpg", quality=88
+        )
+
+    def save_overlay_frame(self, estimate: RailEstimate) -> None:
+        now = time.monotonic()
+        if now - self.last_overlay_save < 0.2:  # ~5 fps
+            return
+        self.last_overlay_save = now
+        PilImage.fromarray(estimate.overlay_rgb, "RGB").save(
+            self.overlay_dir / f"f_{self.overlay_index:06d}.jpg", quality=85
+        )
+        self.overlay_index += 1
+
+    def control_once(self) -> None:
+        now = time.monotonic()
+        self.poll_mavlink()
+        estimate = self.perception.latest
+        fresh = estimate is not None and now - estimate.timestamp <= self.args.detection_timeout
+        camera_alive = now - self.perception.last_frame_time <= self.args.detection_timeout
+        if fresh:
+            self.last_detection_time = now
+        if estimate is not None and self.state not in (
+            MissionState.DRY_RUN,
+            MissionState.PREFLIGHT,
+        ):
+            self.save_overlay_frame(estimate)
+
+        if self.state == MissionState.DRY_RUN:
+            if fresh and now - self.last_status >= 1.0:
+                right, yaw_rate = self.guidance(estimate)
+                print(
+                    f"DRY rail={estimate.confidence:.2f} center={estimate.center_error:+.3f} "
+                    f"heading={math.degrees(estimate.heading_error):+.1f}deg "
+                    f"cmd_right={right:+.2f} cmd_yaw={yaw_rate:+.2f}",
+                    flush=True,
+                )
+                self.save_debug(estimate)
+                self.last_status = now
+            return
+
+        if self.state not in (MissionState.PREFLIGHT, MissionState.ABORT) and not self.vehicle_armed:
+            self.transition(MissionState.ABORT, "vehicle disarmed unexpectedly")
+
+        # Continuously stream valid setpoints, including before OFFBOARD mode.
+        if self.home_position is None and self.local_position is not None:
+            self.home_position = self.local_position
+
+        if self.state == MissionState.PREFLIGHT:
+            self.send_velocity(0, 0, 0, 0)
+            ready = (
+                self.home_position is not None
+                and camera_alive
+                and now - self.state_since >= self.args.preflight_seconds
+            )
+            if ready and not (self.vehicle_offboard and self.vehicle_armed):
+                if now - self.last_mode_request >= 1.0:
+                    self.arm_and_offboard()
+                    self.last_mode_request = now
+            elif ready and self.vehicle_offboard and self.vehicle_armed:
+                self.transition(MissionState.TAKEOFF, "OFFBOARD and armed confirmed")
+            elif now - self.state_since > self.args.preflight_timeout:
+                self.transition(MissionState.ABORT, "preflight timeout")
+            return
+
+        if self.state == MissionState.TAKEOFF:
+            down = self.altitude_down_speed()
+            self.send_velocity(0, 0, down, 0)
+            if self.local_position and self.home_position:
+                climbed = self.home_position[2] - self.local_position[2]
+                if abs(climbed - self.args.height) <= self.args.altitude_tolerance:
+                    self.last_capture_distance = -self.args.capture_spacing
+                    self.transition(MissionState.OUTBOUND, "target height reached")
+            return
+
+        if self.state in (MissionState.OUTBOUND, MissionState.INBOUND):
+            self.update_distance()
+            if not fresh:
+                # Rail hidden (level crossing pavement, turnout frog, shadow).
+                # Creep straight ahead so we coast across the gap instead of
+                # stalling on top of it. Steering is zeroed here on purpose: a
+                # held command from the last (possibly poor) frame can spiral the
+                # aircraft off course. Abort only if lost for line_loss_abort.
+                self.send_velocity(
+                    self.args.speed * 0.4, 0.0, self.altitude_down_speed(), 0.0
+                )
+                if now - self.last_detection_time > self.args.line_loss_abort:
+                    self.transition(MissionState.ABORT, "rail detection lost")
+                return
+            right, yaw_rate = self.guidance(estimate)
+            self.send_velocity(self.args.speed, right, self.altitude_down_speed(), yaw_rate)
+            self.maybe_capture(estimate)
+
+            if self.state == MissionState.OUTBOUND and self.outbound_distance >= self.args.route_distance:
+                if self.attitude_yaw is None:
+                    self.transition(MissionState.ABORT, "no attitude for turnaround")
+                else:
+                    self.turn_target_yaw = wrap_pi(self.attitude_yaw + math.pi)
+                    self.transition(MissionState.TURNAROUND, "route endpoint reached")
+            elif self.state == MissionState.INBOUND:
+                home_error = math.inf
+                if self.local_position and self.home_position:
+                    home_error = math.hypot(
+                        self.local_position[0] - self.home_position[0],
+                        self.local_position[1] - self.home_position[1],
+                    )
+                if home_error <= self.args.home_tolerance:
+                    self.transition(MissionState.HOLD, "home reached; manual takeover requested")
+            return
+
+        if self.state == MissionState.TURNAROUND:
+            if self.attitude_yaw is None or self.turn_target_yaw is None:
+                self.transition(MissionState.ABORT, "attitude unavailable")
+                return
+            error = wrap_pi(self.turn_target_yaw - self.attitude_yaw)
+            yaw_rate = clamp(
+                self.args.turn_kp * error,
+                -self.args.turn_rate,
+                self.args.turn_rate,
+            )
+            self.send_velocity(0, 0, self.altitude_down_speed(), yaw_rate)
+            if abs(error) <= math.radians(self.args.turn_tolerance_deg):
+                self.last_capture_distance = -self.args.capture_spacing
+                self.transition(MissionState.INBOUND, "180 degree turn complete")
+            return
+
+        # HOLD and ABORT both stop horizontal motion and maintain altitude. The
+        # operator can take over in QGroundControl; Ctrl+C stops setpoint output.
+        self.send_velocity(0, 0, self.altitude_down_speed(), 0)
+
+    def run(self) -> int:
+        print(f"MODEL {self.args.model}", flush=True)
+        print(f"CAMERA {self.args.camera_topic}", flush=True)
+        print(f"MODE {'EXECUTE' if self.args.execute else 'DRY-RUN'}", flush=True)
+        self.request_streams()
+        period = 1.0 / self.args.control_rate
+        try:
+            while self.running:
+                started = time.monotonic()
+                self.control_once()
+                time.sleep(max(0.0, period - (time.monotonic() - started)))
+        finally:
+            if self.args.execute:
+                for _ in range(10):
+                    self.send_velocity(0, 0, 0, 0)
+                    time.sleep(0.02)
+            self.gz_node.unsubscribe(self.args.camera_topic)
+            self.perception.close()
+            self.capture_log.close()
+        return 0
+
+
+def parse_args() -> argparse.Namespace:
+    project = Path(__file__).resolve().parents[1]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--model", type=Path, default=project / "models/rail_autoflight_best.pt")
+    parser.add_argument("--camera-topic", default="/x500/rail_down_camera/image")
+    parser.add_argument("--mavlink-port", type=int, default=14540)
+    parser.add_argument("--output", type=Path, default=project / "output/rail_autoflight")
+    parser.add_argument("--execute", action="store_true", help="arm and fly; default is dry-run")
+    parser.add_argument("--confidence", type=float, default=0.45)
+    parser.add_argument("--image-size", type=int, default=640)
+    parser.add_argument("--height", type=float, default=2.0)
+    parser.add_argument("--speed", type=float, default=3.0)
+    parser.add_argument("--route-distance", type=float, default=500.0)
+    parser.add_argument("--capture-spacing", type=float, default=1.2)
+    parser.add_argument("--home-tolerance", type=float, default=2.0)
+    parser.add_argument("--altitude-tolerance", type=float, default=0.15)
+    parser.add_argument("--center-kp", type=float, default=1.4)
+    parser.add_argument("--heading-kp", type=float, default=1.8)
+    parser.add_argument("--altitude-kp", type=float, default=0.8)
+    parser.add_argument("--max-lateral-speed", type=float, default=1.0)
+    parser.add_argument("--max-vertical-speed", type=float, default=0.8)
+    parser.add_argument("--max-yaw-rate", type=float, default=0.6)
+    parser.add_argument("--turn-kp", type=float, default=1.2)
+    parser.add_argument("--turn-rate", type=float, default=0.6)
+    parser.add_argument("--turn-tolerance-deg", type=float, default=4.0)
+    parser.add_argument("--lateral-sign", type=float, choices=(-1.0, 1.0), default=1.0)
+    parser.add_argument("--yaw-sign", type=float, choices=(-1.0, 1.0), default=1.0)
+    parser.add_argument("--detection-timeout", type=float, default=0.7)
+    parser.add_argument("--line-loss-abort", type=float, default=2.0)
+    parser.add_argument("--preflight-seconds", type=float, default=2.0)
+    parser.add_argument("--preflight-timeout", type=float, default=20.0)
+    parser.add_argument("--control-rate", type=float, default=20.0)
+    return parser.parse_args()
+
+
+def main() -> int:
+    args = parse_args()
+    if not args.model.is_file():
+        raise SystemExit(f"Model not found: {args.model}")
+    app = Autoflight(args)
+
+    def stop(_signum, _frame) -> None:
+        app.running = False
+
+    signal.signal(signal.SIGINT, stop)
+    signal.signal(signal.SIGTERM, stop)
+    return app.run()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

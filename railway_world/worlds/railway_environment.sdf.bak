@@ -153,7 +153,7 @@
     <include><uri>model://catenary_span_24m</uri><name>ocs_curve_09</name><pose>217.8528 63.2396 0 0 0 0.570000</pose></include>
     <include><uri>model://catenary_mast</uri><name>ocs_curve_terminal</name><pose>227.8570 69.8658 0 0 0 0.600000</pose></include>
 
-    <!-- Rail-side modules are omitted through the station opening only. -->
+    <!-- Rail-side modules are omitted through station and crossing openings. -->
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_00</name><pose>-244 0 0 0 0 0</pose></include>
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_01</name><pose>-232 0 0 0 0 0</pose></include>
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_02</name><pose>-220 0 0 0 0 0</pose></include>
@@ -168,17 +168,8 @@
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_23</name><pose>31.9719 1.1245 0 0 0 0.075000</pose></include>
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_24</name><pose>43.9229 2.2030 0 0 0 0.105000</pose></include>
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_25</name><pose>55.8361 3.6395 0 0 0 0.135000</pose></include>
-    <include><uri>model://railside_infrastructure_12m</uri><name>infra_26</name><pose>67.7009 5.4327 0 0 0 0.165000</pose></include>
-    <include><uri>model://railside_infrastructure_12m</uri><name>infra_27</name><pose>79.5066 7.5809 0 0 0 0.195000</pose></include>
-    <include><uri>model://railside_infrastructure_12m</uri><name>infra_28</name><pose>91.2425 10.0824 0 0 0 0.225000</pose></include>
-    <include><uri>model://railside_infrastructure_12m</uri><name>infra_29</name><pose>102.8982 12.9347 0 0 0 0.255000</pose></include>
-    <include><uri>model://railside_infrastructure_12m</uri><name>infra_30</name><pose>114.4630 16.1353 0 0 0 0.285000</pose></include>
-    <include><uri>model://railside_infrastructure_12m</uri><name>infra_31</name><pose>125.9266 19.6814 0 0 0 0.315000</pose></include>
-    <include><uri>model://railside_infrastructure_12m</uri><name>infra_32</name><pose>137.2787 23.5698 0 0 0 0.345000</pose></include>
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_33</name><pose>148.5090 27.7970 0 0 0 0.375000</pose></include>
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_34</name><pose>159.6075 32.3590 0 0 0 0.405000</pose></include>
-    <include><uri>model://railside_infrastructure_12m</uri><name>infra_35</name><pose>170.5642 37.2520 0 0 0 0.435000</pose></include>
-    <include><uri>model://railside_infrastructure_12m</uri><name>infra_36</name><pose>181.3691 42.4714 0 0 0 0.465000</pose></include>
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_37</name><pose>192.0127 48.0125 0 0 0 0.495000</pose></include>
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_38</name><pose>202.4852 53.8704 0 0 0 0.525000</pose></include>
     <include><uri>model://railside_infrastructure_12m</uri><name>infra_39</name><pose>212.7773 60.0398 0 0 0 0.555000</pose></include>
@@ -197,12 +188,14 @@
     <include><uri>model://station_platform_12m</uri><name>platform_09</name><pose>-6 0 0 0 0 0</pose></include>
 
     <include><uri>model://station_furniture</uri><name>platform_furniture</name><pose>-66 0 0 0 0 0</pose></include>
+    <include><uri>model://railway_turnout</uri><name>turnout_and_siding</name><pose>79.5066 7.5809 0 0 0 0.195000</pose></include>
+    <include><uri>model://level_crossing</uri><name>level_crossing_east</name><pose>175.9862 39.8212 0 0 0 0.450000</pose></include>
 
     <!-- Persistent Entity Tree entry. PX4 SITL attaches to this model by name. -->
     <include>
       <uri>model://x500_rail_down_cam</uri>
       <name>x500</name>
-      <pose>-118 0 0.60 0 0 0</pose>
+      <pose>-250 0 0.60 0 0 0</pose>
     </include>
 
     <model name="signal_equipment">

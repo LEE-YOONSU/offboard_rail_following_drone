@@ -3,6 +3,7 @@
 /output/
 /railway_world_datasets_*.tar.gz
 /railway_world_datasets_*.tar.gz.sha256
+/railway_world_datasets_*.tar.gz.corrupt
 
 # Python caches and local environments
 __pycache__/

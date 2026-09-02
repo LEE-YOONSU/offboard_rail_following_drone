@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.9">
+  <model name="x500_rail_down_cam">
+    <!-- PX4 supplies the flight dynamics, rotors and base airframe. -->
+    <include merge="true">
+      <uri>x500</uri>
+    </include>
+
+    <!-- Gazebo cameras look along local +X. +90 deg pitch points +X at world -Z. -->
+    <link name="rail_down_camera_link">
+      <pose relative_to="base_link">0 0 -0.11 0 1.57079632679 0</pose>
+      <inertial>
+        <mass>0.08</mass>
+        <inertia>
+          <ixx>0.00008</ixx><iyy>0.00008</iyy><izz>0.00008</izz>
+          <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+        </inertia>
+      </inertial>
+      <visual name="camera_body">
+        <pose>-0.025 0 0 0 0 0</pose>
+        <geometry><box><size>0.05 0.07 0.045</size></box></geometry>
+        <material>
+          <ambient>0.035 0.04 0.045 1</ambient>
+          <diffuse>0.055 0.06 0.065 1</diffuse>
+          <specular>0.25 0.25 0.25 1</specular>
+        </material>
+      </visual>
+      <visual name="camera_lens">
+        <pose>0.004 0 0 0 1.57079632679 0</pose>
+        <geometry><cylinder><radius>0.014</radius><length>0.012</length></cylinder></geometry>
+        <material><ambient>0.01 0.015 0.02 1</ambient><diffuse>0.01 0.02 0.03 1</diffuse></material>
+      </visual>
+      <sensor name="rail_down_rgb" type="camera">
+        <pose>0.012 0 0 0 0 0</pose>
+        <always_on>true</always_on>
+        <update_rate>20</update_rate>
+        <visualize>false</visualize>
+        <topic>/x500/rail_down_camera/image</topic>
+        <camera>
+          <horizontal_fov>1.3962634</horizontal_fov>
+          <image>
+            <width>1280</width><height>720</height><format>R8G8B8</format>
+          </image>
+          <clip><near>0.08</near><far>300</far></clip>
+        </camera>
+      </sensor>
+    </link>
+
+    <joint name="rail_down_camera_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>rail_down_camera_link</child>
+    </joint>
+  </model>
+</sdf>

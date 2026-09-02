@@ -36,7 +36,34 @@ PX4 X500과 하방 RGB 카메라를 함께 실행:
 ./run_x500.sh
 ```
 
-X500은 월드에 영구 포함되어 Entity Tree에 `x500`으로 표시됩니다. 기본 위치는 승강장 앞 본선 중앙 `(-118, 0, 0.60)`이며, 시작 화면도 이 위치를 바라봅니다. `run_x500.sh`는 새 기체를 생성하지 않고 이 엔티티에 PX4 SITL을 연결합니다. 하방 영상 토픽은 `/x500/rail_down_camera/image`입니다. 종료할 때 실행 터미널에서 `Ctrl+C`를 누르면 PX4와 Gazebo가 함께 종료됩니다.
+학습한 YOLO segmentation 모델로 선로 인식과 제어 방향을 먼저 드라이런 검증:
+
+```bash
+./run_autoflight.sh
+```
+
+`output/rail_autoflight/latest_overlay.jpg`와 터미널의 `cmd_right`, `cmd_yaw` 방향이
+정상인지 확인한 뒤에만 SITL 자동비행을 실행합니다.
+
+```bash
+./run_autoflight.sh --execute
+```
+
+Gazebo, PX4 SITL, 카메라와 자동비행을 한 번에 실행:
+
+```bash
+./run_autoflight_sim.sh
+```
+
+자동 이륙 없이 실시간 인식만 확인하려면 `./run_autoflight_sim.sh --dry-run`을
+사용합니다. `Ctrl+C`로 종료하면 자동비행 제어기, PX4와 Gazebo가 함께 종료됩니다.
+
+기본 임무는 레일면 위 2 m, 전진 3 m/s, 전진·복귀 각각 1.2 m 이동 간격 촬영,
+500 m 도달 후 180도 회전·출발점 복귀·운용자 수동 전환 대기 호버입니다. 선로 인식이
+2초 이상 끊기면 수평 이동을 중단하고 `ABORT` 호버로 전환합니다. 실제 기체가 아닌
+PX4 SITL에서 제어 부호와 게인을 충분히 검증한 뒤 사용하세요.
+
+X500은 월드에 영구 포함되어 Entity Tree에 `x500`으로 표시됩니다. 자동비행 기본 위치는 500 m 본선의 서쪽 시작점 `(-250, 0, 0.60)`입니다. `run_x500.sh`는 새 기체를 생성하지 않고 이 엔티티에 PX4 SITL을 연결합니다. 하방 영상 토픽은 `/x500/rail_down_camera/image`입니다. 종료할 때 실행 터미널에서 `Ctrl+C`를 누르면 PX4와 Gazebo가 함께 종료됩니다.
 
 ## 지원 및 검증 환경
 
